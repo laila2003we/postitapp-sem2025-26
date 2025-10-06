@@ -7,7 +7,23 @@ import { Container, Row, Col } from "reactstrap"; //import the Reactstrap Compon
 const Home = () => {
   return (
     <>
-      <h1>Home</h1>
+      <Row>
+        <Col md={3}>
+          <User />
+        </Col>
+
+        <Col md={9}>
+          <SharePosts />
+        </Col>
+      </Row>
+
+      <Row>
+        <Col md={3}></Col>
+
+        <Col md={9}>
+          <Posts />
+        </Col>
+      </Row>
     </>
   );
 };
