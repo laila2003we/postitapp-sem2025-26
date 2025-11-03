@@ -258,7 +258,9 @@ body {
 .nav a:hover {
   color: #007bff; /* Change color on hover (optional) */
 }
+
 .nav-link a {
   color: inherit;
+
   text-decoration: none;
 }
