@@ -4,8 +4,18 @@ import SharePosts from "./SharePost";
 import User from "./User";
 import Login from "./Login";
 import { Container, Row, Col } from "reactstrap"; //import the Reactstrap Components
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 const Home = () => {
+  const email = useSelector((state) => state.users.user.email);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!email) {
+      navigate("/login");
+    }
+  }, [email]);
   return (
     <>
       <Row>
@@ -23,7 +33,6 @@ const Home = () => {
 
         <Col md={9}>
           <Posts />
-          <Login />
         </Col>
       </Row>
     </>

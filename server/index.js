@@ -25,9 +25,8 @@ app.post("/registerUser", async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const hashedpassword = await bcrypt.hash(password, 10);
-
     const user = new UserModel({
-      name,
+      name: name,
       email,
       password: hashedpassword,
     });
@@ -39,6 +38,7 @@ app.post("/registerUser", async (req, res) => {
     console.log(error);
   }
 });
+
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body; //using destructuring
@@ -67,6 +67,11 @@ app.post("/login", async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+//POST API-logout
+
+app.post("/logout", async (req, res) => {
+  res.status(200).json({ message: "Logged out successfully" });
 });
 app.listen(3001, () => {
   console.log("You are connected");

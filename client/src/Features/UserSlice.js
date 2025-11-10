@@ -3,13 +3,15 @@ import { UsersData } from "../Exampledata";
 import axios from "axios";
 
 //const initialState = { value: UsersData };
+
 const initialState = {
   user: {},
   isLoading: false,
   isSuccess: false,
   isError: false,
 };
-//Create a thunk
+
+//Create the thunk
 export const registerUser = createAsyncThunk(
   "users/registerUser",
   async (userData) => {
@@ -20,32 +22,66 @@ export const registerUser = createAsyncThunk(
         password: userData.password,
       });
       const user = response.data.user;
+
+      return user;
     } catch (error) {
       console.log(error);
     }
   }
 );
 
+export const login = createAsyncThunk("users/login", async (userData) => {
+  try {
+    const response = await axios.post("http://localhost:3001/login", {
+      email: userData.email,
+
+      password: userData.password,
+    });
+
+    const user = response.data.user;
+
+    console.log(response);
+
+    return user;
+  } catch (error) {
+    //handle the error
+
+    const errorMessage = "Invalid credentials";
+
+    alert(errorMessage);
+
+    throw new Error(errorMessage);
+  }
+});
+
+export const logout = createAsyncThunk("/users/logout", async () => {
+  try {
+    // Send a request to your server to log the user out
+
+    const response = await axios.post("http://localhost:3001/logout");
+  } catch (error) {}
+});
+
 export const userSlice = createSlice({
   name: "users", //name of the state
   initialState, // initial value of the state
-  //   reducers: {
-  //     addUser: (state, action) => {
-  //       state.value.push(action.payload);
-  //     },
-  //     deleteUser: (state, action) => {
-  //       state.value = state.value.filter((user) => user.email !== action.payload);
-  //     },
-  //     updateUser: (state, action) => {
-  //       state.value.map((user) => {
-  //         //iterate the  array and compare the email with the email from the payload
-  //         if (user.email === action.payload.email) {
-  //           user.name = action.payload.name;
-  //           user.password = action.payload.password;
-  //         }
-  //       });
-  //     },
+  // reducers: {
+  //   addUser: (state, action) => {
+  //     state.value.push(action.payload);
   //   },
+  //   deleteUser: (state, action) => {
+  //     state.value = state.value.filter((user) => user.email !== action.payload);
+  //   },
+  //   updateUser: (state, action) => {
+  //     state.value.map((user) => {
+  //       //iterate the  array and compare the email with the email from the payload
+  //       if (user.email === action.payload.email) {
+  //         user.name = action.payload.name;
+  //         user.password = action.payload.password;
+  //       }
+  //     });
+  //   },
+  // },
   extraReducers: (builder) => {
     builder
       .addCase(registerUser.pending, (state) => {
@@ -54,9 +90,40 @@ export const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = true;
       })
-
       .addCase(registerUser.rejected, (state) => {
         state.isLoading = false;
+      })
+
+      .addCase(login.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(login.fulfilled, (state, action) => {
+        state.isLoading = true;
+        state.isSuccess = true;
+        state.user = action.payload;
+      })
+      .addCase(login.rejected, (state) => {
+        state.isLoading = false;
+      })
+
+      .addCase(logout.pending, (state) => {
+        state.isLoading = true;
+      })
+
+      .addCase(logout.fulfilled, (state) => {
+        // Clear user data or perform additional cleanup if needed
+
+        state.user = {};
+
+        state.isLoading = false;
+
+        state.isSuccess = false;
+      })
+
+      .addCase(logout.rejected, (state) => {
+        state.isLoading = false;
+
+        state.isError = true;
       });
   },
 });

@@ -3,9 +3,9 @@ import * as yup from "yup";
 
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerUser } from "../Features/UserSlice";
+
 import {
   Button,
   Col,
@@ -20,6 +20,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { addUser, deleteUser } from "../Features/UserSlice";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 //For form validation using react-hook-form
 
@@ -45,6 +46,7 @@ const Register = () => {
   // Handle form submission
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const onSubmit = (data) => {
     try {
       console.log("Form Data", data);

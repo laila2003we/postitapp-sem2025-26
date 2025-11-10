@@ -1,5 +1,7 @@
 import loginimage from "../Images/loginImage.jpg";
 import "../App.css";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Col,
@@ -11,7 +13,40 @@ import {
   Form,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { login } from "../Features/UserSlice";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Login = () => {
+  const [email, setemail] = useState();
+  const [password, setpassword] = useState();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const user = useSelector((state) => state.users.user);
+  const isSuccess = useSelector((state) => state.users.isSuccess);
+  const isError = useSelector((state) => state.users.isError);
+
+  const handleLogin = () => {
+    const userData = {
+      email,
+      password,
+    };
+    dispatch(login(userData));
+  };
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/login");
+    }
+    if (isSuccess) {
+      navigate("/");
+    } else {
+      navigate("/login");
+    }
+  }, [user, isError, isSuccess]);
+
   return (
     <Container>
       <Form>
@@ -24,6 +59,7 @@ const Login = () => {
                 name="email"
                 placeholder="Enter your Email"
                 type="email"
+                onChange={(e) => setemail(e.target.value)}
               />
             </FormGroup>
           </Col>
@@ -38,6 +74,7 @@ const Login = () => {
                 name="password"
                 placeholder="Enter you password"
                 type="password"
+                onChange={(e) => setpassword(e.target.value)}
               />
             </FormGroup>
           </Col>
@@ -45,7 +82,7 @@ const Login = () => {
 
         <Row>
           <Col md={3}>
-            <Button>Login</Button>
+            <Button onClick={() => handleLogin()}>Login</Button>
           </Col>
         </Row>
 
