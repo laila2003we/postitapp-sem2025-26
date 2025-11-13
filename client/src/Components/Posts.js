@@ -25,7 +25,6 @@ const Posts = () => {
               {/* Ensure to add a unique key for each row */}
               <td>{post.email}</td>
               <td>
-                <p>{post.createdAt}</p>
                 <p> {moment(post.createdAt).fromNow()}</p>
                 {post.postMsg}
               </td>
