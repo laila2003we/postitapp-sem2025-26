@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import user from "../Images/user.png";
+import Location from "./Location";
 
 const Profile = () => {
   const email = useSelector((state) => state.users.user.email);
@@ -21,6 +22,7 @@ const Profile = () => {
       <img src={user} className="userImage" />
       <p>User Name :{name}</p>
       <p>Email :{email}</p>
+      <Location />
     </div>
   );
 };

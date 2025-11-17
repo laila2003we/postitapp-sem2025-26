@@ -3,6 +3,7 @@ import logo from "../Images/logo-t.png";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../Features/UserSlice";
+import { FaThumbsUp } from "react-icons/fa6";
 
 const Header = () => {
   const dispatch = useDispatch();

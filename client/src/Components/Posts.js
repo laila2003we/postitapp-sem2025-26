@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { getPosts } from "../Features/PostSlice";
 import { Table } from "reactstrap";
 import moment from "moment";
+import { likePost } from "../Features/PostSlice";
+import { FaThumbsUp } from "react-icons/fa6";
 
 const Posts = () => {
   const posts = useSelector((state) => state.posts.posts);
@@ -11,6 +13,16 @@ const Posts = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleLikePost = (postId) => {
+    const postData = {
+      postId: postId,
+      email: email,
+    };
+
+    dispatch(likePost(postData));
+    navigate("/home");
+  };
 
   useEffect(() => {
     dispatch(getPosts());
@@ -27,6 +39,12 @@ const Posts = () => {
               <td>
                 <p> {moment(post.createdAt).fromNow()}</p>
                 {post.postMsg}
+                <p className="likes">
+                  <a href="#" onClick={() => handleLikePost(post._id)}>
+                    <FaThumbsUp />
+                  </a>
+                  ({post.likes.count})
+                </p>
               </td>
             </tr>
           ))}

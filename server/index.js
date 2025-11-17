@@ -105,6 +105,88 @@ app.get("/getPosts", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
+
+app.put("/likePost/:postId/", async (req, res) => {
+  const postId = req.params.postId; //Extract the ID of the post from the URL
+
+  const userId = req.body.userId;
+
+  try {
+    //search the postId if it exists
+
+    const postToUpdate = await PostModel.findOne({ _id: postId });
+
+    if (!postToUpdate) {
+      return res.status(404).json({ msg: "Post not found." });
+    }
+
+    //Search the user Id from the array of users who liked the post.
+
+    const userIndex = postToUpdate.likes.users.indexOf(userId);
+
+    //indexOf method returns the index of the first occurrence of a specified value in an array.
+
+    //If the value is not found, it returns -1.
+
+    //This code will toogle from like to unlike
+
+    if (userIndex !== -1) {
+      // User has already liked the post, so unlike it
+
+      const udpatedPost = await PostModel.findOneAndUpdate(
+        { _id: postId },
+
+        {
+          $inc: { "likes.count": -1 }, // Decrement the like count $inc and $pull are update operators
+
+          $pull: { "likes.users": userId }, // Remove userId from the users array
+        },
+
+        { new: true } // Return the modified document
+      );
+
+      res.json({ post: udpatedPost, msg: "Post unliked." });
+    } else {
+      // User hasn't liked the post, so like it
+
+      const updatedPost = await PostModel.findOneAndUpdate(
+        { _id: postId },
+
+        {
+          $inc: { "likes.count": 1 }, // Increment the like count
+
+          $addToSet: { "likes.users": userId }, // Add userId to the users array if not already present
+        },
+
+        { new: true } // Return the modified document
+      );
+
+      res.json({ post: updatedPost, msg: "Post liked." });
+    }
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+// app.put("/updateUserProfile/: email/", async (req, res) => {
+//   //Retrieve the value from the route
+//   const email = req.params.email;
+//   //Retrieve the values from the request body.
+//   const name = req.body.name;
+//   const password = req.body.password;
+//   try {
+//     // Search for the user that will be updated using the findOne method
+//     const userToUpdate = await UserModel.findOne({ email: email });
+//     // Check if the user was found
+//     if (!userToUpdate) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//     return;
+//   }
+// });
 app.listen(3001, () => {
   console.log("You are connected");
 });

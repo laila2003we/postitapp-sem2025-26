@@ -37,6 +37,31 @@ const postSlice = createSlice({
       .addCase(getPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(likePost.pending, (state) => {
+        state.status = "loading";
+      })
+
+      .addCase(likePost.fulfilled, (state, action) => {
+        state.status = "succeeded";
+
+        //Search the post id from the posts state
+
+        const updatedPostIndex = state.posts.findIndex(
+          (post) => post._id === action.payload.postId
+        );
+
+        //If found, update the likes property of the found post to the current value of the likes
+
+        if (updatedPostIndex !== -1) {
+          state.posts[updatedPostIndex].likes = action.payload.likes;
+        }
+      })
+
+      .addCase(likePost.rejected, (state, action) => {
+        state.status = "failed";
+
+        state.error = action.error.message;
       });
   },
 });
@@ -59,6 +84,21 @@ export const getPosts = createAsyncThunk("post/getPosts", async () => {
     const response = await axios.get("http://localhost:3001/getPosts");
     return response.data.posts;
     console.log(response);
+  } catch (error) {
+    console.log(error);
+  }
+});
+export const likePost = createAsyncThunk("posts/likePost", async (postData) => {
+  try {
+    //Pass along the URL the postId
+    const response = await axios.put(
+      `http://localhost:3001/likePost/${postData.postId}`,
+      {
+        userId: postData.userId,
+      }
+    );
+    const post = response.data.post;
+    return post;
   } catch (error) {
     console.log(error);
   }

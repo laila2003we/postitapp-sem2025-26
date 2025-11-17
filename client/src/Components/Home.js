@@ -7,6 +7,7 @@ import { Container, Row, Col } from "reactstrap"; //import the Reactstrap Compon
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { FaThumbsUp } from "react-icons/fa6";
 const Home = () => {
   const email = useSelector((state) => state.users.user.email);
   const navigate = useNavigate();
